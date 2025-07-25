@@ -1,0 +1,87 @@
+HTML CODE:
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Real-time Traffic Information</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+    <h1>Real-time Traffic Information</h1>
+    <div id="traffic-status">
+        <h2>Traffic Status</h2>
+        <p id="status-message">Loading...</p>
+    </div>
+    <div id="route-recommendations">
+        <h2>Route Recommendations</h2>
+        <ul id="recommended-routes">
+            <li>Loading...</li>
+        </ul>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+
+
+CSS CODE:
+
+body {
+    font-family: Arial, sans-serif;
+}
+
+h1 {
+    text-align: center;
+}
+
+#traffic-status, #route-recommendations {
+    margin: 20px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    background-color: #f7f7f7;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    margin: 5px 0;
+}
+
+
+JAVASCRIPT CODE:
+
+const apiUrl = 'https://wokwi.com/projects/378929272438345729';
+
+async function updateTrafficStatus() {
+    try {
+        const response = await fetch(apiUrl + '/traffic-status');
+        const data = await response.json();
+        document.getElementById('status-message').textContent = data.message;
+    } catch (error) {
+        console.error('Error fetching traffic status:', error);
+    }
+}
+
+async function updateRecommendedRoutes() {
+    try {
+        const response = await fetch(apiUrl + '/recommended-routes');
+        const data = await response.json();
+        const routesList = document.getElementById('recommended-routes');
+        routesList.innerHTML = ''; // Clear the previous list
+        data.routes.forEach(route => {
+            const listItem = document.createElement('li');
+            listItem.textContent = route;
+            routesList.appendChild(listItem);
+        });
+    } catch (error) {
+        console.error('Error fetching recommended routes:', error);
+    }
+}
+
+updateTrafficStatus();
+updateRecommendedRoutes();
+setInterval(updateTrafficStatus, 60000);
+setInterval(updateRecommendedRoutes, 60000); 
