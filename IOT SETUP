@@ -1,3 +1,5 @@
+WOKWI SIMULATOR / ARDUINO IDE CODE:
+
 const int echoPin=2;
 int ledPin1=3;
 int ledPin2=4;
