@@ -1,0 +1,72 @@
+const int echoPin=2;
+int ledPin1=3;
+int ledPin2=4;
+int ledPin3=5;
+const int trigPin=11;
+bool ledActivated=false;
+unsigned long ledActivationTime=0;
+
+void setup() 
+{
+  Serial.begin(9600);
+  pinMode(echoPin,INPUT);
+  pinMode(trigPin,OUTPUT);
+  pinMode(ledPin1,OUTPUT);
+  pinMode(ledPin2,OUTPUT);
+  pinMode(ledPin3,OUTPUT);
+}
+
+void loop() 
+{
+  if(!ledActivated)
+  {
+    digitalWrite(trigPin,LOW);
+    delayMicroseconds(2);
+    digitalWrite(trigPin,HIGH);
+    delayMicroseconds(10);
+    digitalWrite(trigPin,LOW);
+
+    unsigned long duration=pulseIn(echoPin,HIGH);
+    unsigned long distance=duration/58;
+
+    Serial.print("Distance:");
+    Serial.print(distance);
+    Serial.println("cm");
+
+    if(distance<50) 
+    {
+      digitalWrite(ledPin3,HIGH);
+      Serial.println("Heavily Crowded");
+      ledActivated=true;
+      ledActivationTime=millis();
+    }
+    
+    else if(distance<100)
+    {
+      digitalWrite(ledPin2,HIGH);
+      Serial.println("Moderately Crowded");
+      ledActivated=true;
+      ledActivationTime=millis();
+    }
+    
+    else
+    {
+      digitalWrite(ledPin1,HIGH);
+      Serial.println("Less Crowded");
+      ledActivated=true;
+      ledActivationTime=millis();
+    }
+  }
+  
+  else
+  {
+    if(millis()-ledActivationTime>=2000)
+    {
+      digitalWrite(ledPin1,LOW);
+      digitalWrite(ledPin2,LOW);
+      digitalWrite(ledPin3,LOW);
+      ledActivated=false;
+    }
+  }
+  delay(1000);
+}
